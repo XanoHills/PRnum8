@@ -3,6 +3,7 @@ package main.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Основной класс для запуска приложения
@@ -31,7 +32,26 @@ public class Supermarket {
 
     public static void main(String[] args) {
         ConfigLoader configLoader = new ConfigLoader();
-        int numberOfCashiers = configLoader.loadConfig("config.xml");
+        Scanner scanner = new Scanner(System.in);
+        int numberOfCashiers = 0;
+
+        System.out.println("Enter the number of cashiers (natural number):");
+        while (numberOfCashiers <= 0) {
+            if (scanner.hasNextInt()) {
+                numberOfCashiers = scanner.nextInt();
+                if (numberOfCashiers <= 0) {
+                    System.out.println("Please enter a natural number greater than 0.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a natural number.");
+                scanner.next(); // Clear the invalid input
+            }
+        }
+
+        // Сохранение конфигурации в XML
+        configLoader.saveConfig("config.xml", numberOfCashiers);
+
+        numberOfCashiers = configLoader.loadConfig("config.xml");
 
         Supermarket supermarket = new Supermarket(numberOfCashiers);
         supermarket.open();
